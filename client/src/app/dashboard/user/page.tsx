@@ -32,6 +32,7 @@ import HomeIcon from "@mui/icons-material/Home";
 import AddIcon from "@mui/icons-material/Add";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import EditIcon from "@mui/icons-material/Edit";
+import LogoutIcon from "@mui/icons-material/Logout";
 import { AppDispatch, RootState } from "@/store";
 import { fetchUsers } from "@/store/thunks/userThunks";
 import { selectUsers, selectUserTotal } from "@/store/selectors/userSelectors";
@@ -45,6 +46,7 @@ import {
   resetFilters,
 } from "@/store/slices/userSlice";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/authContext";
 
 export default function Dashboard() {
   const dispatch = useDispatch<AppDispatch>();
@@ -64,6 +66,7 @@ export default function Dashboard() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const router = useRouter();
+  const { logout } = useAuth();
 
   useEffect(() => {
     dispatch(fetchUsers());
@@ -106,6 +109,11 @@ export default function Dashboard() {
     router.push("/dashboard/forms");
   };
 
+  const handleLogout = () => {
+    logout();
+    router.push("/login");
+  };
+
   if (status === "loading") {
     return (
       <Box
@@ -129,13 +137,43 @@ export default function Dashboard() {
     <Box sx={{ display: "flex", bgcolor: "white" }}>
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         <Container maxWidth="lg">
-          <Breadcrumbs aria-label="breadcrumb" sx={{ mb: 2 }}>
-            <Link href="#" sx={{ display: "flex", alignItems: "center" }}>
-              <HomeIcon sx={{ mr: 0.5 }} fontSize="inherit" />
-              Dashboard
-            </Link>
-            <Typography color="text.primary">User</Typography>
-          </Breadcrumbs>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              mb: 2,
+            }}
+          >
+            <Breadcrumbs aria-label="breadcrumb">
+              <Link href="#" sx={{ display: "flex", alignItems: "center" }}>
+                <HomeIcon sx={{ mr: 0.5 }} fontSize="inherit" />
+                Dashboard
+              </Link>
+              <Typography color="text.primary">User</Typography>
+            </Breadcrumbs>
+            {isMobile ? (
+              <IconButton
+                onClick={handleLogout}
+                sx={{
+                  color: "white",
+                  bgcolor: "red",
+                  "&:hover": { bgcolor: "darkred" },
+                }}
+              >
+                <LogoutIcon />
+              </IconButton>
+            ) : (
+              <Button
+                variant="contained"
+                color="error"
+                startIcon={<LogoutIcon />}
+                onClick={handleLogout}
+              >
+                Logout
+              </Button>
+            )}
+          </Box>
 
           <Typography
             variant="h4"

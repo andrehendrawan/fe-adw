@@ -18,9 +18,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (token && firstName && lastName && image) {
       setUser({
         token,
-        firstName: JSON.parse(firstName),
-        lastName: JSON.parse(lastName),
-        image: JSON.parse(image),
+        firstName: firstName,
+        lastName: lastName,
+        image: image,
       });
     }
   }, []);
@@ -53,8 +53,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     Cookies.remove("image");
   };
 
+  const isAuthenticated = () => {
+    return !!user || !!Cookies.get("token");
+  };
+
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, login, logout, isAuthenticated }}>
       {children}
     </AuthContext.Provider>
   );

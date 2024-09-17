@@ -4,6 +4,7 @@ import "./globals.css";
 import { Providers } from "./providers";
 import ClientLayout from "@/components/clientLayout";
 import { AuthProvider } from "@/context/authContext";
+import ProtectedRoute from "@/components/protectedRoute";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -31,7 +32,9 @@ export default function RootLayout({
       <body>
         <Providers>
           <AuthProvider>
-            <ClientLayout>{children}</ClientLayout>
+            <ProtectedRoute>
+              <ClientLayout>{children}</ClientLayout>
+            </ProtectedRoute>
           </AuthProvider>
         </Providers>
       </body>
